@@ -70,5 +70,7 @@ auto findMaxN(auto&& range, size_t n) -> size_t
 
 auto main() -> int
 {
-    std::cout << findMaxN(sumContent(splitContent(getFileContent("data.txt"))), 3);
+    const auto content = sumContent(splitContent(getFileContent("data.txt")));
+    std::cout << "1: " << findMaxN(content, 1) << "\n";
+    std::cout << "2: " << findMaxN(content, 3) << "\n";
 }
