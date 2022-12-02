@@ -99,26 +99,6 @@ public:
     }
 };
 
-template <typename C>
-struct to_helper
-{
-};
-
-// This actually does the work
-template <typename Container, std::ranges::range R>
-requires std::convertible_to < std::ranges::range_value_t<R>,
-typename Container::value_type >
-    Container operator|(R &&r, to_helper<Container>)
-{
-    return Container{r.begin(), r.end()};
-}
-
-template <std::ranges::range Container>
-requires(!std::ranges::view<Container>) auto to()
-{
-    return to_helper<Container>{};
-}
-
 auto toRound(std::string_view opponent, std::string_view you) -> Round
 {
     return Round{youCode.at(you), opponentCode.at(opponent)};
@@ -130,21 +110,21 @@ auto toRoundExtended(std::string_view opponent, std::string_view you) -> Round
     return Round{extendedYouCode.at({you, opponentShape}), opponentShape};
 }
 
-auto toRounds(auto &&range) -> std::vector<Round>
+auto toRounds(auto&& range)
 {
     return range | std::ranges::views::transform([](auto &&view) {
         return toRound(*view.begin(), *(std::next(view.begin())));
-    }) | to<std::vector<Round>>();
+    });
 }
 
-auto toRoundsExtended(auto &&range) -> std::vector<Round>
+auto toRoundsExtended(auto&& range)
 {
     return range | std::ranges::views::transform([](auto &&view) {
         return toRoundExtended(*view.begin(), *(std::next(view.begin())));
-    }) | to<std::vector<Round>>();
+    });
 }
 
-auto getPoints(const std::vector<Round> &rounds) -> uint32_t
+auto getPoints(auto&& rounds) -> uint32_t
 {
     return std::accumulate(rounds.begin(), rounds.end(), uint32_t{}, [](uint32_t points, const Round &round) {
         return points + round.points;
