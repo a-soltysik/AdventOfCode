@@ -47,7 +47,7 @@ auto findCommonItems(auto&& rucksacks)
     });
 }
 
-// O(group.size() * n) in average case
+// O(group.size() * n log(n)) in average case
 auto findCommonBadge(auto&& group) -> char
 {
     auto setIntersection = std::set<char>((*group.begin()).begin(), (*group.begin()).end());
